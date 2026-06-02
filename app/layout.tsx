@@ -25,7 +25,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="pt-BR" className={`${geistSans.variable} ${geistMono.variable}`}>
-      <body>{children}</body>
+      <body>
+        {children}
+        <a className="process-shortcut" href="/fluxo">
+          Fluxo completo
+        </a>
+      </body>
     </html>
   );
 }
