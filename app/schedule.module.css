@@ -1,0 +1,213 @@
+.agendaToolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+  margin-bottom: 16px;
+}
+
+.segmented {
+  display: inline-flex;
+  gap: 6px;
+  padding: 6px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: rgba(255,255,255,.78);
+}
+
+.segmented button {
+  border: 0;
+  border-radius: 999px;
+  padding: 9px 13px;
+  background: transparent;
+  color: var(--muted);
+  font-weight: 900;
+}
+
+.segmented button.active {
+  color: #fff;
+  background: #101828;
+}
+
+.quickFilters {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.searchInput,
+.selectInput {
+  border: 1px solid var(--line);
+  background: #fff;
+  border-radius: 999px;
+  padding: 11px 14px;
+  outline: none;
+  color: var(--foreground);
+}
+
+.searchInput:focus,
+.selectInput:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 4px rgba(63, 94, 251, 0.12);
+}
+
+.timeline {
+  border: 1px solid var(--line);
+  border-radius: 24px;
+  background: rgba(255,255,255,.78);
+  overflow: hidden;
+}
+
+.slotRow {
+  display: grid;
+  grid-template-columns: 86px minmax(0, 1fr);
+  min-height: 74px;
+  border-bottom: 1px solid var(--line);
+}
+
+.slotRow:last-child {
+  border-bottom: 0;
+}
+
+.slotTime {
+  padding: 18px 14px;
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 900;
+  border-right: 1px solid var(--line);
+  background: rgba(248,250,252,.7);
+}
+
+.slotContent {
+  padding: 10px;
+  display: grid;
+  gap: 8px;
+}
+
+.slotEmpty {
+  border: 1px dashed #c8d2e4;
+  border-radius: 18px;
+  min-height: 52px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 14px;
+  color: var(--muted);
+  background: rgba(255,255,255,.55);
+}
+
+.slotEvent {
+  border: 1px solid rgba(63,94,251,.18);
+  border-left: 6px solid var(--primary);
+  border-radius: 18px;
+  padding: 13px 14px;
+  background: #fff;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 12px;
+  align-items: center;
+  box-shadow: 0 10px 24px rgba(16,24,40,.07);
+}
+
+.slotEvent strong {
+  display: block;
+  letter-spacing: -.02em;
+}
+
+.slotMeta {
+  margin: 5px 0 0;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+.monthGrid {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.monthCell {
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  min-height: 118px;
+  padding: 12px;
+  background: rgba(255,255,255,.8);
+}
+
+.monthCell.today {
+  border-color: rgba(63,94,251,.45);
+  box-shadow: 0 0 0 4px rgba(63,94,251,.08);
+}
+
+.monthDay {
+  font-weight: 900;
+  margin-bottom: 8px;
+}
+
+.monthEvent {
+  display: block;
+  width: 100%;
+  border: 0;
+  border-radius: 12px;
+  padding: 7px 8px;
+  margin-top: 6px;
+  background: var(--primary-soft);
+  color: var(--primary-dark);
+  text-align: left;
+  font-size: 12px;
+  font-weight: 900;
+}
+
+.statusBoard {
+  display: grid;
+  gap: 12px;
+}
+
+.statusLine {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 12px;
+  align-items: center;
+  padding: 13px;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: #fff;
+}
+
+.progressTrack {
+  height: 9px;
+  border-radius: 999px;
+  background: #edf2f7;
+  overflow: hidden;
+  margin-top: 8px;
+}
+
+.progressFill {
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, var(--primary), #8d5cf6);
+}
+
+@media (max-width: 780px) {
+  .slotRow {
+    grid-template-columns: 1fr;
+  }
+
+  .slotTime {
+    border-right: 0;
+    border-bottom: 1px solid var(--line);
+    padding: 10px 14px;
+  }
+
+  .slotEvent {
+    grid-template-columns: 1fr;
+  }
+
+  .monthGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
