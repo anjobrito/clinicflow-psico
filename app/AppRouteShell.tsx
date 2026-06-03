@@ -49,8 +49,8 @@ export default function AppRouteShell({ children }: { children: React.ReactNode 
         </nav>
 
         <div className="sidebar-card">
-          <strong>Produto em validação</strong>
-          <p>Use a navegação lateral para acessar agenda, relatórios e financeiro no mesmo padrão visual.</p>
+          <strong>Navegação do produto</strong>
+          <p>Volte ao painel para operar agenda, pacientes e atendimentos. Relatórios e financeiro ficam em páginas dedicadas.</p>
           <a className="btn btn-primary" href="/">Voltar ao painel</a>
         </div>
       </aside>
