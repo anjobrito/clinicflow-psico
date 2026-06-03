@@ -5,25 +5,22 @@ import { useEffect } from "react";
 export default function SidebarProductLinks() {
   useEffect(() => {
     const sidebarNav = document.querySelector(".sidebar .nav-list");
-    if (!sidebarNav || document.querySelector(".sidebar-submenu-reports")) return;
+    if (!sidebarNav) return;
 
-    const wrapper = document.createElement("details");
-    wrapper.className = "sidebar-submenu sidebar-submenu-reports";
-    wrapper.open = true;
+    document.querySelectorAll(".sidebar-submenu-reports").forEach((node) => node.remove());
+    if (document.querySelector(".sidebar-finance-link")) return;
 
-    const summary = document.createElement("summary");
-    summary.innerHTML = '<span class="nav-label"><span>▤</span>Gestão</span><span>⌄</span>';
+    const link = document.createElement("a");
+    link.className = "nav-button sidebar-direct-link sidebar-finance-link";
+    link.href = "/financeiro";
+    link.innerHTML = '<span class="nav-label"><span>◈</span>Financeiro</span><span>›</span>';
 
-    const links = document.createElement("div");
-    links.className = "sidebar-submenu-links";
-    links.innerHTML = `
-      <a href="/relatorios">Relatórios gerenciais</a>
-      <a href="/financeiro">Financeiro</a>
-    `;
-
-    wrapper.appendChild(summary);
-    wrapper.appendChild(links);
-    sidebarNav.appendChild(wrapper);
+    const settingsButton = Array.from(sidebarNav.children).find((child) => child.textContent?.includes("Configurações"));
+    if (settingsButton) {
+      sidebarNav.insertBefore(link, settingsButton);
+    } else {
+      sidebarNav.appendChild(link);
+    }
   }, []);
 
   return null;
