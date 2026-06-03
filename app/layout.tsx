@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
-import SidebarProductLinks from "./SidebarProductLinks";
+import AppRouteShell from "./AppRouteShell";
 import "./globals.css";
 import "./sidebarAccordion.css";
 import "./uxButtons.css";
@@ -29,8 +29,7 @@ export default function RootLayout({
   return (
     <html lang="pt-BR" className={`${geistSans.variable} ${geistMono.variable}`}>
       <body>
-        <SidebarProductLinks />
-        {children}
+        <AppRouteShell>{children}</AppRouteShell>
       </body>
     </html>
   );
