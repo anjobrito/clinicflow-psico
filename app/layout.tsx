@@ -25,7 +25,14 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="pt-BR" className={`${geistSans.variable} ${geistMono.variable}`}>
-      <body>{children}</body>
+      <body>
+        <nav className="product-nav" aria-label="Navegação principal do produto">
+          <a href="/">Painel</a>
+          <a href="/relatorios">Relatórios</a>
+          <a href="/financeiro">Financeiro</a>
+        </nav>
+        {children}
+      </body>
     </html>
   );
 }
