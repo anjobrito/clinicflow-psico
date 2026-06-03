@@ -4,33 +4,20 @@ import AppRouteShell from "./AppRouteShell";
 import "./globals.css";
 import "./sidebarAccordion.css";
 import "./uxButtons.css";
+import "./routeShell.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
+const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
+const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "ClinicFlow Psico",
-  description:
-    "Sistema web responsivo para psicólogos administrarem pacientes, agenda, atendimentos, evoluções e relatórios.",
+  description: "Sistema web responsivo para psicólogos administrarem pacientes, agenda, atendimentos, evoluções e relatórios.",
 };
 
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="pt-BR" className={`${geistSans.variable} ${geistMono.variable}`}>
-      <body>
-        <AppRouteShell>{children}</AppRouteShell>
-      </body>
+      <body><AppRouteShell>{children}</AppRouteShell></body>
     </html>
   );
 }
