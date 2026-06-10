@@ -6,6 +6,9 @@ export const roadmap = [
   "documentos-psicologicos",
   "relatorios",
   "financeiro",
+  "area-administrativa-saas",
+  "licencas",
+  "usuarios-e-perfis",
   "configuracoes",
   "prisma-postgresql",
   "autenticacao",
@@ -19,4 +22,16 @@ export const psychologicalDocumentsRoadmap = [
   "laudo-psicologico",
   "encaminhamento",
   "recibo-receita-saude",
+];
+
+export const saasAdministrationRoadmap = [
+  "licenca-ativa-inativa",
+  "bloqueio-de-profissional",
+  "cadastro-de-psicologo",
+  "perfil-administrador",
+  "perfil-psicologo",
+  "perfil-secretaria",
+  "perfil-financeiro",
+  "multi-consultorio",
+  "auditoria-de-acesso",
 ];
