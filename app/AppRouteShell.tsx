@@ -2,8 +2,9 @@
 
 import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
+import AccessDenied from "./AccessDenied";
 import SidebarProductLinks from "./SidebarProductLinks";
-import { ClientRole, getStoredClientRole, setStoredClientRole } from "./clientSession";
+import { ClientRole, LicenseStatus, getStoredClientRole, getStoredLicenseStatus, isLicenseAllowed, setStoredClientRole } from "./clientSession";
 
 const navigation = [
   { href: "/", label: "Dashboard", icon: "◎" },
@@ -18,9 +19,19 @@ const navigation = [
 export default function AppRouteShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const [role, setRole] = useState<ClientRole>("PSICOLOGO");
+  const [licenseStatus, setLicenseStatus] = useState<LicenseStatus>("ACTIVE");
 
   useEffect(() => {
     setRole(getStoredClientRole());
+    setLicenseStatus(getStoredLicenseStatus());
+
+    const updateLicense = () => setLicenseStatus(getStoredLicenseStatus());
+    window.addEventListener("clinicflow-license-change", updateLicense);
+    window.addEventListener("storage", updateLicense);
+    return () => {
+      window.removeEventListener("clinicflow-license-change", updateLicense);
+      window.removeEventListener("storage", updateLicense);
+    };
   }, []);
 
   function changeRole(nextRole: ClientRole) {
@@ -30,6 +41,10 @@ export default function AppRouteShell({ children }: { children: React.ReactNode 
 
   if (pathname.startsWith("/ajb-admin")) {
     return <>{children}</>;
+  }
+
+  if (!isLicenseAllowed(licenseStatus)) {
+    return <AccessDenied title="Licença bloqueada" message="A licença deste consultório está bloqueada ou cancelada pela AJBNetSystems. O acesso ao ambiente do cliente foi interrompido até a regularização." actionHref="/ajb-admin" actionLabel="Abrir AJB Admin" />;
   }
 
   if (pathname === "/") {
@@ -66,7 +81,7 @@ export default function AppRouteShell({ children }: { children: React.ReactNode 
 
         <div className="sidebar-card">
           <strong>Perfil demonstrativo</strong>
-          <p>Simule as permissões do ambiente do cliente antes do login real.</p>
+          <p>Licença: {licenseStatus}. Simule as permissões do ambiente do cliente antes do login real.</p>
           <select value={role} onChange={(event) => changeRole(event.target.value as ClientRole)}>
             <option value="PSICOLOGO">Psicólogo</option>
             <option value="SECRETARIA">Secretária</option>
