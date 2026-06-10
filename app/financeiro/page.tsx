@@ -2,6 +2,9 @@
 
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
+import AccessDenied from "../AccessDenied";
+import { can } from "../accessControl";
+import { ClientRole, getStoredClientRole } from "../clientSession";
 
 type AppointmentStatus = "Agendada" | "Confirmada" | "Em atendimento" | "Atendida" | "Faltou" | "Cancelada" | "Remarcada";
 type ChargeStatus = "Pendente" | "Pago" | "Atrasado" | "Cancelado";
@@ -40,6 +43,7 @@ function loadPayments(): Payment[] {
 }
 
 export default function FinancePage() {
+  const [role, setRole] = useState<ClientRole>("PSICOLOGO");
   const [mvpState, setMvpState] = useState<MvpState>(fallbackState);
   const [payments, setPayments] = useState<Payment[]>([]);
   const [loaded, setLoaded] = useState(false);
@@ -48,6 +52,7 @@ export default function FinancePage() {
   const [loadedAt, setLoadedAt] = useState("");
 
   useEffect(() => {
+    setRole(getStoredClientRole());
     setMvpState(loadMvpState());
     setPayments(loadPayments());
     setLoadedAt(new Date().toLocaleString("pt-BR"));
@@ -107,6 +112,10 @@ export default function FinancePage() {
   function refreshFromMvp() {
     setMvpState(loadMvpState());
     setLoadedAt(new Date().toLocaleString("pt-BR"));
+  }
+
+  if (!can(role, "finance:read")) {
+    return <AccessDenied message="Seu perfil de secretária não possui acesso ao faturamento, cobranças ou relatórios financeiros." />;
   }
 
   return (
