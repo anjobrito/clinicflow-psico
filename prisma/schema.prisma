@@ -7,8 +7,39 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model Tenant {
+  id        String   @id @default(cuid())
+  name      String
+  document  String?
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  clinics  Clinic[]
+  licenses License[]
+}
+
+model License {
+  id        String   @id @default(cuid())
+  tenantId  String
+  plan      String   @default("STARTER")
+  status    String   @default("TRIAL")
+  seats     Int      @default(1)
+  startsAt  DateTime @default(now())
+  expiresAt DateTime?
+  blockedAt DateTime?
+  notes     String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  tenant Tenant @relation(fields: [tenantId], references: [id])
+
+  @@index([tenantId, status])
+}
+
 model Clinic {
   id        String   @id @default(cuid())
+  tenantId  String?
   name      String
   document  String?
   phone     String?
@@ -17,10 +48,13 @@ model Clinic {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  tenant       Tenant? @relation(fields: [tenantId], references: [id])
   users        User[]
   patients     Patient[]
   appointments Appointment[]
   payments     Payment[]
+
+  @@index([tenantId])
 }
 
 model User {
@@ -30,12 +64,16 @@ model User {
   email     String
   role      String   @default("PSYCHOLOGIST")
   active    Boolean  @default(true)
+  blocked   Boolean  @default(false)
+  blockedAt DateTime?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   clinic Clinic @relation(fields: [clinicId], references: [id])
 
   @@unique([clinicId, email])
+  @@index([clinicId, role])
+  @@index([clinicId, active])
 }
 
 model Patient {
@@ -56,6 +94,7 @@ model Patient {
   clinic       Clinic        @relation(fields: [clinicId], references: [id])
   appointments Appointment[]
   payments     Payment[]
+  documents    PsychologicalDocument[]
 
   @@index([clinicId])
 }
@@ -115,4 +154,22 @@ model Payment {
   patient     Patient     @relation(fields: [patientId], references: [id])
 
   @@index([clinicId, status])
+}
+
+model PsychologicalDocument {
+  id        String   @id @default(cuid())
+  clinicId  String
+  patientId String
+  type      String
+  title     String
+  content   String
+  status    String   @default("DRAFT")
+  issuedAt  DateTime?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  patient Patient @relation(fields: [patientId], references: [id])
+
+  @@index([clinicId, type])
+  @@index([patientId])
 }
