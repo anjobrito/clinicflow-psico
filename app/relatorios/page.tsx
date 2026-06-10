@@ -2,6 +2,9 @@
 
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
+import AccessDenied from "../AccessDenied";
+import { can } from "../accessControl";
+import { ClientRole, getStoredClientRole } from "../clientSession";
 
 type AppointmentStatus = "Agendada" | "Confirmada" | "Em atendimento" | "Atendida" | "Faltou" | "Cancelada" | "Remarcada";
 
@@ -80,12 +83,14 @@ function loadMvpState(): MvpState {
 }
 
 export default function ReportsPage() {
+  const [role, setRole] = useState<ClientRole>("PSICOLOGO");
   const [state, setState] = useState<MvpState>(fallbackState);
   const [statusFilter, setStatusFilter] = useState<"Todos" | AppointmentStatus>("Todos");
   const [insuranceFilter, setInsuranceFilter] = useState("Todos");
   const [loadedAt, setLoadedAt] = useState("");
 
   useEffect(() => {
+    setRole(getStoredClientRole());
     setState(loadMvpState());
     setLoadedAt(new Date().toLocaleString("pt-BR"));
   }, []);
@@ -146,6 +151,10 @@ export default function ReportsPage() {
       };
     }).filter((row) => row.appointments > 0 || insuranceFilter === "Todos");
   }, [filteredAppointments, finalizedNoteIds, insuranceFilter, state.patients]);
+
+  if (!can(role, "reports:read")) {
+    return <AccessDenied message="Seu perfil de secretária não possui acesso aos relatórios gerenciais, indicadores financeiros ou pendências clínicas." />;
+  }
 
   return (
     <main className="main-area">
