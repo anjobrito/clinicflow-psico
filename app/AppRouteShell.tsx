@@ -1,7 +1,9 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import SidebarProductLinks from "./SidebarProductLinks";
+import { ClientRole, getStoredClientRole, setStoredClientRole } from "./clientSession";
 
 const navigation = [
   { href: "/", label: "Dashboard", icon: "◎" },
@@ -15,6 +17,16 @@ const navigation = [
 
 export default function AppRouteShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
+  const [role, setRole] = useState<ClientRole>("PSICOLOGO");
+
+  useEffect(() => {
+    setRole(getStoredClientRole());
+  }, []);
+
+  function changeRole(nextRole: ClientRole) {
+    setRole(nextRole);
+    setStoredClientRole(nextRole);
+  }
 
   if (pathname.startsWith("/ajb-admin")) {
     return <>{children}</>;
@@ -53,8 +65,12 @@ export default function AppRouteShell({ children }: { children: React.ReactNode 
         </nav>
 
         <div className="sidebar-card">
-          <strong>Navegação do produto</strong>
-          <p>Volte ao painel para operar agenda, pacientes e atendimentos. Relatórios e financeiro ficam em páginas dedicadas.</p>
+          <strong>Perfil demonstrativo</strong>
+          <p>Simule as permissões do ambiente do cliente antes do login real.</p>
+          <select value={role} onChange={(event) => changeRole(event.target.value as ClientRole)}>
+            <option value="PSICOLOGO">Psicólogo</option>
+            <option value="SECRETARIA">Secretária</option>
+          </select>
           <a className="btn btn-primary" href="/">Voltar ao painel</a>
         </div>
       </aside>
