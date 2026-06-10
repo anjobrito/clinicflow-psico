@@ -16,6 +16,10 @@ const navigation = [
 export default function AppRouteShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
 
+  if (pathname.startsWith("/ajb-admin")) {
+    return <>{children}</>;
+  }
+
   if (pathname === "/") {
     return (
       <>
