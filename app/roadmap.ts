@@ -6,7 +6,7 @@ export const roadmap = [
   "documentos-psicologicos",
   "relatorios",
   "financeiro",
-  "area-administrativa-saas",
+  "area-administrativa-ajbnet",
   "licencas",
   "usuarios-e-perfis",
   "configuracoes",
@@ -25,13 +25,30 @@ export const psychologicalDocumentsRoadmap = [
 ];
 
 export const saasAdministrationRoadmap = [
-  "licenca-ativa-inativa",
+  "ajbnetsystems-admin",
+  "licenca-demo",
+  "licenca-trial",
+  "licenca-active",
+  "bloqueio-geral-por-licenca",
   "bloqueio-de-profissional",
   "cadastro-de-psicologo",
-  "perfil-administrador",
   "perfil-psicologo",
   "perfil-secretaria",
-  "perfil-financeiro",
+  "secretaria-sem-faturamento",
+  "secretaria-sem-evolucao-clinica",
   "multi-consultorio",
   "auditoria-de-acesso",
+];
+
+export const clientRoles = [
+  "PSICOLOGO",
+  "SECRETARIA",
+];
+
+export const licenseStatuses = [
+  "DEMO",
+  "TRIAL",
+  "ACTIVE",
+  "BLOCKED",
+  "CANCELED",
 ];
