@@ -12,6 +12,7 @@ const navigation = [
   { href: "/", label: "Pacientes", icon: "◉" },
   { href: "/", label: "Atendimento", icon: "✎" },
   { href: "/documentos", label: "Documentos", icon: "□" },
+  { href: "/usuarios", label: "Usuários", icon: "◇" },
   { href: "/relatorios", label: "Relatórios", icon: "▤" },
   { href: "/financeiro", label: "Financeiro", icon: "◈" },
   { href: "/", label: "Configurações", icon: "⚙" },
