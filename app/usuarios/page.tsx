@@ -4,6 +4,7 @@ import Link from "next/link";
 import { FormEvent, useEffect, useMemo, useState } from "react";
 import AccessDenied from "../AccessDenied";
 import { can } from "../accessControl";
+import { appendAuditEntry } from "../audit";
 import { ClientRole, getStoredClientRole } from "../clientSession";
 
 type ClinicUser = {
@@ -20,26 +21,8 @@ type ClinicUser = {
 const storageKey = "clinicflow-psico-users-v1";
 
 const initialUsers: ClinicUser[] = [
-  {
-    id: "user-psychologist-1",
-    name: "Dra. Ana Psicóloga",
-    email: "ana@clinicflow.com.br",
-    phone: "(19) 99999-0001",
-    role: "PSICOLOGO",
-    active: true,
-    blocked: false,
-    createdAt: new Date().toISOString(),
-  },
-  {
-    id: "user-secretary-1",
-    name: "Marina Secretária",
-    email: "marina@clinicflow.com.br",
-    phone: "(19) 99999-0002",
-    role: "SECRETARIA",
-    active: true,
-    blocked: false,
-    createdAt: new Date().toISOString(),
-  },
+  { id: "user-psychologist-1", name: "Dra. Ana Psicóloga", email: "ana@clinicflow.com.br", phone: "(19) 99999-0001", role: "PSICOLOGO", active: true, blocked: false, createdAt: new Date().toISOString() },
+  { id: "user-secretary-1", name: "Marina Secretária", email: "marina@clinicflow.com.br", phone: "(19) 99999-0002", role: "SECRETARIA", active: true, blocked: false, createdAt: new Date().toISOString() },
 ];
 
 function loadUsers() {
@@ -101,19 +84,31 @@ export default function UsersPage() {
     };
 
     setUsers((current) => [newUser, ...current]);
+    appendAuditEntry({ scope: "CLINIC", action: "USER_CREATED", actor: "Psicólogo responsável", targetType: "USER", targetId: newUser.id, description: `Usuário ${newUser.name} criado com a role ${newUser.role}.` });
     setForm({ name: "", email: "", phone: "", role: "SECRETARIA" });
   }
 
   function toggleActive(id: string) {
-    setUsers((current) => current.map((user) => user.id === id ? { ...user, active: !user.active } : user));
+    const user = users.find((item) => item.id === id);
+    if (!user) return;
+    const nextActive = !user.active;
+    setUsers((current) => current.map((item) => item.id === id ? { ...item, active: nextActive } : item));
+    appendAuditEntry({ scope: "CLINIC", action: nextActive ? "USER_ACTIVATED" : "USER_DEACTIVATED", actor: "Psicólogo responsável", targetType: "USER", targetId: id, description: `${user.name} foi ${nextActive ? "ativado" : "desativado"}.` });
   }
 
   function toggleBlocked(id: string) {
-    setUsers((current) => current.map((user) => user.id === id ? { ...user, blocked: !user.blocked } : user));
+    const user = users.find((item) => item.id === id);
+    if (!user) return;
+    const nextBlocked = !user.blocked;
+    setUsers((current) => current.map((item) => item.id === id ? { ...item, blocked: nextBlocked } : item));
+    appendAuditEntry({ scope: "CLINIC", action: nextBlocked ? "USER_BLOCKED" : "USER_UNBLOCKED", actor: "Psicólogo responsável", targetType: "USER", targetId: id, description: `${user.name} foi ${nextBlocked ? "bloqueado" : "desbloqueado"}.` });
   }
 
   function changeRole(id: string, role: ClientRole) {
-    setUsers((current) => current.map((user) => user.id === id ? { ...user, role } : user));
+    const user = users.find((item) => item.id === id);
+    if (!user || user.role === role) return;
+    setUsers((current) => current.map((item) => item.id === id ? { ...item, role } : item));
+    appendAuditEntry({ scope: "CLINIC", action: "USER_ROLE_CHANGED", actor: "Psicólogo responsável", targetType: "USER", targetId: id, description: `Role de ${user.name} alterada de ${user.role} para ${role}.` });
   }
 
   if (!can(currentRole, "patients:read-full")) {
@@ -128,7 +123,7 @@ export default function UsersPage() {
           <h1 className="page-title">Usuários do consultório</h1>
           <p className="page-description">Cadastre psicólogos e secretárias, defina roles e controle o acesso de cada usuário.</p>
         </div>
-        <div className="top-actions"><Link className="btn btn-secondary" href="/">Voltar ao painel</Link></div>
+        <div className="top-actions"><Link className="btn btn-secondary" href="/auditoria">Ver auditoria</Link><Link className="btn btn-secondary" href="/">Voltar ao painel</Link></div>
       </header>
 
       <section className="grid stats-grid">
