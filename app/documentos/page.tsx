@@ -78,7 +78,6 @@ export default function DocumentsPage() {
   }, [documents]);
 
   const patientsById = useMemo(() => new Map(mvpState.patients.map((patient) => [patient.id, patient])), [mvpState.patients]);
-  const selectedPatient = patientsById.get(patientId);
   const totals = useMemo(() => ({ drafts: documents.filter((doc) => doc.status === "RASCUNHO").length, review: documents.filter((doc) => doc.status === "EM_REVISAO").length, issued: documents.filter((doc) => doc.status === "EMITIDO").length }), [documents]);
 
   function refreshTemplate(nextType = type, nextPatientId = patientId) {

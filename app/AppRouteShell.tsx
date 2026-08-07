@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import AccessDenied from "./AccessDenied";
 import SidebarProductLinks from "./SidebarProductLinks";
 import { ClientRole, LicenseStatus, getStoredClientRole, getStoredLicenseStatus, isLicenseAllowed, setStoredClientRole } from "./clientSession";
+import { ClinicUnit, getActiveClinicId, loadClinics, setActiveClinicId } from "./clinicContext";
 
 const navigation = [
   { href: "/", label: "Dashboard", icon: "◎" },
@@ -13,6 +14,7 @@ const navigation = [
   { href: "/", label: "Atendimento", icon: "✎" },
   { href: "/documentos", label: "Documentos", icon: "□" },
   { href: "/usuarios", label: "Usuários", icon: "◇" },
+  { href: "/consultorios", label: "Consultórios", icon: "⌂" },
   { href: "/auditoria", label: "Auditoria", icon: "◫" },
   { href: "/relatorios", label: "Relatórios", icon: "▤" },
   { href: "/financeiro", label: "Financeiro", icon: "◈" },
@@ -23,23 +25,41 @@ export default function AppRouteShell({ children }: { children: React.ReactNode 
   const pathname = usePathname();
   const [role, setRole] = useState<ClientRole>("PSICOLOGO");
   const [licenseStatus, setLicenseStatus] = useState<LicenseStatus>("ACTIVE");
+  const [clinics, setClinics] = useState<ClinicUnit[]>([]);
+  const [activeClinicId, setActiveClinic] = useState("");
 
   useEffect(() => {
     setRole(getStoredClientRole());
     setLicenseStatus(getStoredLicenseStatus());
+    setClinics(loadClinics());
+    setActiveClinic(getActiveClinicId());
 
     const updateLicense = () => setLicenseStatus(getStoredLicenseStatus());
+    const updateClinics = () => {
+      setClinics(loadClinics());
+      setActiveClinic(getActiveClinicId());
+    };
+
     window.addEventListener("clinicflow-license-change", updateLicense);
-    window.addEventListener("storage", updateLicense);
+    window.addEventListener("clinicflow-clinics-change", updateClinics);
+    window.addEventListener("clinicflow-active-clinic-change", updateClinics);
+    window.addEventListener("storage", updateClinics);
     return () => {
       window.removeEventListener("clinicflow-license-change", updateLicense);
-      window.removeEventListener("storage", updateLicense);
+      window.removeEventListener("clinicflow-clinics-change", updateClinics);
+      window.removeEventListener("clinicflow-active-clinic-change", updateClinics);
+      window.removeEventListener("storage", updateClinics);
     };
   }, []);
 
   function changeRole(nextRole: ClientRole) {
     setRole(nextRole);
     setStoredClientRole(nextRole);
+  }
+
+  function changeClinic(clinicId: string) {
+    setActiveClinic(clinicId);
+    setActiveClinicId(clinicId);
   }
 
   if (pathname.startsWith("/ajb-admin")) {
@@ -83,8 +103,13 @@ export default function AppRouteShell({ children }: { children: React.ReactNode 
         </nav>
 
         <div className="sidebar-card">
-          <strong>Perfil demonstrativo</strong>
-          <p>Licença: {licenseStatus}. Simule as permissões do ambiente do cliente antes do login real.</p>
+          <strong>Contexto demonstrativo</strong>
+          <p>Licença: {licenseStatus}. Perfil e unidade simulam o futuro login SaaS.</p>
+          <label>Unidade ativa</label>
+          <select value={activeClinicId} onChange={(event) => changeClinic(event.target.value)}>
+            {clinics.filter((clinic) => clinic.active).map((clinic) => <option key={clinic.id} value={clinic.id}>{clinic.name}</option>)}
+          </select>
+          <label>Perfil</label>
           <select value={role} onChange={(event) => changeRole(event.target.value as ClientRole)}>
             <option value="PSICOLOGO">Psicólogo</option>
             <option value="SECRETARIA">Secretária</option>
