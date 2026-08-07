@@ -18,6 +18,7 @@ const navigation = [
   { href: "/auditoria", label: "Auditoria", icon: "◫" },
   { href: "/relatorios", label: "Relatórios", icon: "▤" },
   { href: "/financeiro", label: "Financeiro", icon: "◈" },
+  { href: "/reset", label: "Reset", icon: "↺" },
   { href: "/", label: "Configurações", icon: "⚙" },
 ];
 
@@ -62,12 +63,12 @@ export default function AppRouteShell({ children }: { children: React.ReactNode 
     setActiveClinicId(clinicId);
   }
 
-  if (pathname.startsWith("/ajb-admin")) {
+  if (pathname.startsWith("/ajb-admin") || pathname.startsWith("/reset")) {
     return <>{children}</>;
   }
 
   if (!isLicenseAllowed(licenseStatus)) {
-    return <AccessDenied title="Licença bloqueada" message="A licença deste consultório está bloqueada ou cancelada pela AJBNetSystems. O acesso ao ambiente do cliente foi interrompido até a regularização." actionHref="/ajb-admin" actionLabel="Abrir AJB Admin" />;
+    return <AccessDenied title="Licença bloqueada" message="A licença deste consultório está bloqueada ou cancelada pela AJBNetSystems. O acesso ao ambiente do cliente foi interrompido até a regularização." actionHref="/reset" actionLabel="Resetar demonstração" />;
   }
 
   if (pathname === "/") {

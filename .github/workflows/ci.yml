@@ -50,6 +50,9 @@ jobs:
       - name: TypeScript
         run: npm run typecheck
 
+      - name: Unit tests
+        run: npm run test:unit
+
       - name: Smoke tests
         run: npm run test:smoke
 
